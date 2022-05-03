@@ -4,29 +4,36 @@ on:
   push:
   workflow_dispatch:
   pull_request:
-    branches: 
-    - master 
+    branches:
+      - master
 
 jobs:
   build:
-    runs-on: self-hosted
+    name: ${{ matrix.config.name }}
+    runs-on: ${{ matrix.config.os }}
     strategy:
+      fail-fast: false
       matrix:
-        cc: [gcc, clang]
-        include:
-          - cc: gcc
-            cxx: g++
-          - cc: clang
-            cxx: clang++
+        config:
+          - {
+            name: "Ubuntu Latest GCC",
+            os: ubuntu-latest,
+            cc: "gcc", cxx: "g++"
+          }
+          - {
+            name: "Ubuntu Latest Clang",
+            os: ubuntu-latest,
+            cc: "clang", cxx: "clang++"
+          }
 
     steps:
-    - uses: actions/checkout@v2
-    
-    - name: Install dependencies
-      run: sed 's/\r$//' dependencies/apt.txt | sed 's/#.*//' | xargs sudo apt install -y
-    
-    - name: Configure
-      run: CC=${{ matrix.cc }} CXX=${{ matrix.cxx }} cmake -G"Unix Makefiles" -Bbuild
+      - uses: actions/checkout@v2
 
-    - name: Build
-      run: cmake --build build
+      - name: Install dependencies
+        run: sed 's/\r$//' dependencies/apt.txt | sed 's/#.*//' | xargs sudo apt install -y
+
+      - name: Configure
+        run: CC=${{ matrix.cc }} CXX=${{ matrix.cxx }} cmake -G"Unix Makefiles" -Bbuild
+
+      - name: Build
+        run: cmake --build build
