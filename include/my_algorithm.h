@@ -9,7 +9,7 @@
 #include <iterator>
 #include <memory>
 #include <cstring>
-#include "my_stream.h" // just in order to to use one header in main.cpp
+#include "my_stream.h" // just in order to use one header in main.cpp
 
 namespace my_std {
     // todo: add separate iterator type for output

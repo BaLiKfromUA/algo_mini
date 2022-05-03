@@ -74,8 +74,24 @@ void my_transform_example() {
     std::cout << '\n';
 }
 
+void my_stream_example() {
+    std::vector<int> init{1, 2, 3, 4, 5};
+    // my_std::stream s({1, 2, 3, 4, 5});
+    my_std::stream s(init);
+
+    std::cout << s
+            .map([](const auto &value) { return value * value; })
+            .reduce([](const auto &left, const auto &right) {
+                return left + right;
+            });
+
+
+    std::cout << '\n';
+}
+
 int main() {
     //my_copy_example();
-    my_transform_example();
+    //my_transform_example();
+    my_stream_example();
     return 0;
 }
