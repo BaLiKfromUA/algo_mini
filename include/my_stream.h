@@ -13,26 +13,24 @@ namespace my_std {
     template<typename T, template<typename...> typename Container = std::vector>
     class stream {
     private:
-        Container<T> _container{};
+        const Container<T> _container{};
 
     public:
         explicit stream(const Container<T> &container) : _container(container) {}
 
-        stream(std::initializer_list<T> list) {
-            _container = Container<T>(list);
-        }
+        stream(std::initializer_list<T> list) : _container(Container<T>(list)) {}
 
         // todo: constructor for raw array and for two pointers
 
         template<typename U>
-        stream<U, std::vector> map(std::function<U(const T &)> func) {
+        stream<U> map(std::function<U(const T &)> func) {
             std::vector<U> mappedValues;
 
             for (const auto &elm: _container) {
                 mappedValues.push_back(func(elm));
             }
 
-            return stream(mappedValues);
+            return stream<U>(mappedValues);
         }
 
         // todo: fix to more flexible

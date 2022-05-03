@@ -5,6 +5,8 @@
 #include <vector>
 #include <numeric>
 #include <string>
+#include <unordered_map>
+#include <fstream>
 #include "my_algorithm.h"
 
 void my_copy_example() {
@@ -86,7 +88,6 @@ void my_stream_example() {
                 return left + right;
             });
 
-
     std::cout << '\n';
 
     std::vector<std::string> strs{"balik", "mem", "heh", "longest", "test", "stream"};
@@ -99,6 +100,35 @@ void my_stream_example() {
             return right;
         }
     }) << '\n';
+
+    my_std::stream fileStream({"../data/file1.txt", "../data/file2.txt"});
+
+    auto result = fileStream
+            .map<std::unordered_map<std::string, int>>([](const auto &value) {
+                std::unordered_map<std::string, int> cnt;
+                std::ifstream in(value);
+                if (in) {
+                    std::string s;
+                    while (in >> s) {
+                        ++cnt[s];
+                    }
+                }
+                return cnt;
+            })
+            .reduce([](const auto &left, const auto &right) {
+                std::unordered_map<std::string, int> result = left;
+
+                for (const auto &[key, value]: right) {
+                    result[key] += value;
+                }
+
+                return result;
+            });
+
+    for (const auto &[key, value]: result) {
+        std::cout << key << " : " << value << "\n";
+    }
+
 }
 
 int main() {
