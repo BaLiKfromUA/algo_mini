@@ -32,6 +32,10 @@ namespace my_std {
         }
 
         Container<T> collect() {
+            if (_pipeline.empty()) {
+                return _container;
+            }
+
             Container<T> result;
 
             for (const auto &value: _container) {
@@ -53,8 +57,8 @@ namespace my_std {
 
         T reduce(std::function<T(const T &, const T &)> reducer, const T &startValue = T{}) {
             T result = startValue;
-            auto mappedValues = collect();
-            for (const auto &elm: mappedValues) {
+            auto processedValues = collect();
+            for (const auto &elm: processedValues) {
                 result = reducer(result, elm);
             }
             return result;

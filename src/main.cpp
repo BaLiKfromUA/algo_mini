@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <numeric>
+#include <string>
 #include "my_algorithm.h"
 
 void my_copy_example() {
@@ -77,9 +78,9 @@ void my_transform_example() {
 void my_stream_example() {
     std::vector<int> init{1, 2, 3, 4, 5};
     // my_std::stream s({1, 2, 3, 4, 5});
-    my_std::stream s(init);
+    my_std::stream intStream(init);
 
-    std::cout << s
+    std::cout << intStream
             .map([](const auto &value) { return value * value; })
             .reduce([](const auto &left, const auto &right) {
                 return left + right;
@@ -87,6 +88,17 @@ void my_stream_example() {
 
 
     std::cout << '\n';
+
+    std::vector<std::string> strs{"balik", "mem", "heh", "longest", "test", "stream"};
+    my_std::stream strStream(strs);
+
+    std::cout << strStream.reduce([](const auto &left, const auto &right) {
+        if (left.size() > right.size()) {
+            return left;
+        } else {
+            return right;
+        }
+    }) << '\n';
 }
 
 int main() {
