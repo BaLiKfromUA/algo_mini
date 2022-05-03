@@ -81,7 +81,7 @@ void my_stream_example() {
     my_std::stream intStream(init);
 
     std::cout << intStream
-            .map([](const auto &value) { return value * value; })
+            .map<int>([](const auto &value) { return value * value; })
             .reduce([](const auto &left, const auto &right) {
                 return left + right;
             });

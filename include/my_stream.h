@@ -24,66 +24,32 @@ namespace my_std {
 
         // todo: constructor for raw array and for two pointers
 
-        stream<T, Container> &map(std::function<T(const T &)> func) {
-            auto index = _mapOperations.size();
-            _mapOperations.push_back(func);
-            _pipeline.push_back(Operation::makeOperation(index, Type::Map));
-            return *this;
+        template<typename U>
+        stream<U, std::vector> map(std::function<U(const T &)> func) {
+            std::vector<U> mappedValues;
+
+            for (const auto &elm: _container) {
+                mappedValues.push_back(func(elm));
+            }
+
+            return stream(mappedValues);
         }
 
+        // todo: fix to more flexible
         Container<T> collect() {
-            if (_pipeline.empty()) {
-                return _container;
-            }
-
-            Container<T> result;
-
-            for (const auto &value: _container) {
-                T tmp = value;
-
-                for (const auto &op: _pipeline) {
-                    switch (op.type) {
-                        case Type::Map:
-                            tmp = _mapOperations[op.index](tmp);
-                            break;
-                    }
-                }
-
-                result.insert(result.end(), tmp);
-            }
-
-            return result;
+            return _container;
         }
 
         T reduce(std::function<T(const T &, const T &)> reducer, const T &startValue = T{}) {
             T result = startValue;
-            auto processedValues = collect();
-            for (const auto &elm: processedValues) {
+
+            for (const auto &elm: _container) {
                 result = reducer(result, elm);
             }
+
             return result;
         }
 
-    private:
-        enum class Type {
-            Map
-        };
-
-        struct Operation {
-            size_t index;
-            Type type;
-
-            static Operation makeOperation(size_t index, Type type) {
-                Operation operation;
-                operation.index = index;
-                operation.type = type;
-                return operation;
-            }
-        };
-
-        std::vector<std::function<T(const T &)> > _mapOperations;
-
-        std::vector<Operation> _pipeline;
     };
 }
 
