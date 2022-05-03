@@ -8,6 +8,7 @@
 #include <type_traits>
 #include <iterator>
 #include <memory>
+#include <cstring>
 #include "my_stream.h" // just in order to to use one header in main.cpp
 
 namespace my_std {
@@ -32,6 +33,7 @@ namespace my_std {
         }
     }
 
+    // https://en.cppreference.com/w/cpp/algorithm/transform
     template<typename InputIt, typename OutputIt, typename UnaryOperation>
     OutputIt transform(InputIt first1, InputIt last1, OutputIt d_first, UnaryOperation unary_op) {
         while (first1 != last1) {
