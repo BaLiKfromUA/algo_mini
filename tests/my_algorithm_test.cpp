@@ -178,7 +178,6 @@ TEST(MapReduce, TEST_EXAMPLES_FROM_TASK) {
                                                          {"seven", 7}};
 
     EXPECT_EQ(expected.size(), wordCnt.size());
-
     for (const auto &[key, value]: expected) {
         EXPECT_EQ(value, wordCnt[key]);
     }
