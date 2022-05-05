@@ -37,3 +37,14 @@ jobs:
 
       - name: Build
         run: cmake --build build
+
+      - name: Test
+        working-directory: ./build
+        run: GTEST_OUTPUT=xml:test-results/ GTEST_COLOR=1 ctest -V
+
+      - name: Upload test results in case of failure
+        uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: test_results_xml
+          path: ./build/test-results/**/*.xml

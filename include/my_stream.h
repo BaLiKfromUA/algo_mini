@@ -1,6 +1,5 @@
-//
-// Created by balik on 5/3/2022.
-//
+// This is a personal academic project. Dear PVS-Studio, please check it.
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: http://www.viva64.com
 
 #ifndef TEMPLATE_MY_STREAM_H
 #define TEMPLATE_MY_STREAM_H
@@ -30,7 +29,7 @@ namespace my_std {
                 mappedValues.push_back(func(elm));
             }
 
-            return stream<U>(mappedValues);
+            return stream<U, std::vector>(mappedValues);
         }
 
         // todo: fix to more flexible

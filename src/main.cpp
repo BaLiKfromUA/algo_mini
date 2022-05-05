@@ -5,7 +5,7 @@
 #include <vector>
 #include <numeric>
 #include <string>
-#include <unordered_map>
+#include <map>
 #include <fstream>
 #include "my_algorithm.h"
 
@@ -24,21 +24,6 @@ void my_copy_example() {
                             to_vector.begin());
     assert(end == to_vector.end());
     for (int i: to_vector) {
-        std::cout << i << ' ';
-    }
-    std::cout << '\n';
-
-    int arr[N] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-
-    for (int i: arr) {
-        std::cout << i << ' ';
-    }
-    std::cout << '\n';
-
-    int arr1[N];
-    auto arr_end = my_std::copy(arr, arr + 10, arr1);
-    assert(arr_end == arr1 + N);
-    for (int i: arr1) {
         std::cout << i << ' ';
     }
     std::cout << '\n';
@@ -101,11 +86,11 @@ void my_stream_example() {
         }
     }) << '\n';
 
-    my_std::stream fileStream({"../data/file1.txt", "../data/file2.txt"});
+    my_std::stream fileStream({"../data/file1.txt", "../data/file2.txt", "../data/file3.txt"});
 
     auto result = fileStream
-            .map<std::unordered_map<std::string, int>>([](const auto &value) {
-                std::unordered_map<std::string, int> cnt;
+            .map<std::map<std::string, int>>([](const auto &value) {
+                std::map<std::string, int> cnt;
                 std::ifstream in(value);
                 if (in) {
                     std::string s;
@@ -116,7 +101,7 @@ void my_stream_example() {
                 return cnt;
             })
             .reduce([](const auto &left, const auto &right) {
-                std::unordered_map<std::string, int> result = left;
+                std::map<std::string, int> result = left;
 
                 for (const auto &[key, value]: right) {
                     result[key] += value;

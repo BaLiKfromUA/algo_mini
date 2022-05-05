@@ -1,5 +1,3 @@
-<mark>Template for your README. Remove all unused parts and instructions</mark>
-
 # Lab work 5: mini-library with algorithms
 
 It is required to implement algorithms library C ++, which includes:
