@@ -171,8 +171,6 @@ TEST(MapReduce, TEST_MAP) {
     auto characters = my_std::stream(init).map<char>([](auto value) { return value + 'a'; }).collect();
     std::vector<char> expected_characters = {'a', 'b', 'c', 'd', 'e'};
     EXPECT_EQ(expected_characters, characters);
-
-    // todo: advanced examples of map+reduce + test collect()
 }
 
 TEST(MapReduce, TEST_EXAMPLES_FROM_TASK) {

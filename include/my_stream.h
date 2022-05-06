@@ -11,30 +11,22 @@
 namespace my_std {
     template<typename T, template<typename...> typename Container = std::vector>
     class stream {
-    private:
-        const Container<T> _container{};
-
     public:
         explicit stream(const Container<T> &container) : _container(container) {}
 
         stream(std::initializer_list<T> list) : _container(Container<T>(list)) {}
 
-        // todo: constructor for raw array and for two pointers
+        stream(T *begin, std::size_t n) : _container(Container<T>(begin, begin + n)) {}
 
         template<typename U>
         stream<U> map(std::function<U(const T &)> func) {
-            std::vector<U> mappedValues;
+            Container<U> mappedValues;
 
             for (const auto &elm: _container) {
-                mappedValues.push_back(func(elm));
+                mappedValues.insert(mappedValues.end(), func(elm));
             }
 
-            return stream<U, std::vector>(mappedValues);
-        }
-
-        // todo: fix to more flexible
-        Container<T> collect() {
-            return _container;
+            return stream<U, Container>(mappedValues);
         }
 
         T reduce(std::function<T(const T &, const T &)> reducer, const T &startValue = T{}) {
@@ -47,6 +39,19 @@ namespace my_std {
             return result;
         }
 
+        template<template<typename...> typename OutputContainer = std::vector>
+        OutputContainer<T> collect() {
+            OutputContainer<T> result;
+
+            for (const auto &elm: _container) {
+                result.insert(result.end(), elm);
+            }
+
+            return result;
+        }
+
+    private:
+        const Container<T> _container;
     };
 }
 

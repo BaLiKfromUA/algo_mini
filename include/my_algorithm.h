@@ -17,7 +17,6 @@
 
 namespace my_std {
 
-    // todo: add separate iterator type for output
     // https://en.cppreference.com/w/cpp/algorithm/copy
     template<typename iterator>
     iterator copy(iterator first, iterator last, iterator d_first) {
