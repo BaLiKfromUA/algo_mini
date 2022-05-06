@@ -69,9 +69,7 @@ void my_stream_example() {
 
     std::cout << intStream
             .map<int>([](const auto &value) { return value * value; })
-            .reduce([](const auto &left, const auto &right) {
-                return left + right;
-            });
+            .reduce(std::plus<>{});
 
     std::cout << '\n';
 
@@ -103,6 +101,7 @@ void my_stream_example() {
             .reduce([](const auto &left, const auto &right) {
                 std::map<std::string, int> result = left;
 
+                // todo: use merge!
                 for (const auto &[key, value]: right) {
                     result[key] += value;
                 }
@@ -117,8 +116,8 @@ void my_stream_example() {
 }
 
 int main() {
-    //my_copy_example();
-    //my_transform_example();
+    my_copy_example();
+    my_transform_example();
     my_stream_example();
     return 0;
 }

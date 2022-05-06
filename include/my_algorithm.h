@@ -4,6 +4,10 @@
 #ifndef LAB9_APPS_ALGORITHMS_BALIKFROMUA_MY_ALGORITHM_H
 #define LAB9_APPS_ALGORITHMS_BALIKFROMUA_MY_ALGORITHM_H
 
+#ifdef TEST_DEBUG
+#include <iostream>
+#endif
+
 #include <cassert>
 #include <type_traits>
 #include <iterator>
@@ -12,6 +16,7 @@
 #include "my_stream.h" // just in order to use one header in main.cpp
 
 namespace my_std {
+
     // todo: add separate iterator type for output
     // https://en.cppreference.com/w/cpp/algorithm/copy
     template<typename iterator>
@@ -19,10 +24,18 @@ namespace my_std {
         using T = typename std::iterator_traits<iterator>::value_type;
 
         if constexpr(std::is_trivially_copyable_v<T>) {
+#ifdef TEST_DEBUG
+            std::cout << "trivial";
+#endif
+
             const auto len = last - first;
             memcpy(&*d_first, &*first, len * sizeof(T));
             return d_first + len;
         } else {
+#ifdef TEST_DEBUG
+            std::cout << "not trivial";
+#endif
+
             while (first != last) {
                 *d_first = *first;
                 ++first;

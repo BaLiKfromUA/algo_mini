@@ -6,7 +6,7 @@
 
 const int N = 10;
 
-TEST(Copy, BASIC_TEST_WITH_VECTORS) {
+TEST(Copy, BASIC_TEST_WITH_VECTORS_POD) {
     std::vector<int> from_vector(N);
     std::iota(from_vector.begin(), from_vector.end(), 1);
 
@@ -22,20 +22,23 @@ TEST(Copy, BASIC_TEST_WITH_VECTORS) {
         EXPECT_EQ(0, to_vector[i - 1]);
     }
 
+    testing::internal::CaptureStdout();
     auto end = my_std::copy(from_vector.begin(), from_vector.end(),
                             to_vector.begin());
+    std::string output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ("trivial", output);
+
     // test return value
     EXPECT_EQ(end, to_vector.end());
     // test array after copy
     EXPECT_EQ(from_vector, to_vector);
-
     // change original vector
     from_vector[0] = 42;
     EXPECT_EQ(from_vector[0], 42);
     EXPECT_NE(from_vector, to_vector);
 }
 
-TEST(Copy, BASIC_TEST_WITH_ARRAYS) {
+TEST(Copy, BASIC_TEST_WITH_ARRAYS_POD) {
     int arr[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
     // test initial values
@@ -44,7 +47,10 @@ TEST(Copy, BASIC_TEST_WITH_ARRAYS) {
     }
 
     int arr1[N]; // initial values -- garbage
+    testing::internal::CaptureStdout();
     auto arr_end = my_std::copy(arr, arr + 10, arr1);
+    std::string output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ("trivial", output);
 
     // test return value
     EXPECT_EQ(arr_end, arr1 + N);
@@ -56,7 +62,53 @@ TEST(Copy, BASIC_TEST_WITH_ARRAYS) {
         EXPECT_EQ(arr[i], arr1[i]);
     }
 }
-// todo: test for POD and not POD
+
+struct A {
+    int a;
+
+    explicit A(int i) {
+        this->a = i;
+    }
+
+    A() {
+        this->a = 0;
+    };
+
+    virtual void foo() {}
+};
+
+bool operator==(const A &lhs, const A &rhs) { return lhs.a == rhs.a; }
+
+bool operator!=(const A &lhs, const A &rhs) { return !(lhs == rhs); }
+
+TEST(Copy, BASIC_TEST_WITH_VECTORS_NOT_POD) {
+    std::vector<A> from_vector = {A(0), A(1), A(2), A(3), A(4), A(5), A(6), A(7), A(8), A(9)};
+    // test initial values
+    for (int i = 0; i < N; ++i) {
+        EXPECT_EQ(i, from_vector[i].a);
+    }
+
+    std::vector<A> to_vector(N);
+    // test initial values
+    for (int i = 0; i < N; ++i) {
+        EXPECT_EQ(0, to_vector[i].a);
+    }
+
+    testing::internal::CaptureStdout();
+    auto end = my_std::copy(from_vector.begin(), from_vector.end(),
+                            to_vector.begin());
+    std::string output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ("not trivial", output);
+
+    // test return value
+    EXPECT_EQ(end, to_vector.end());
+    // test array after copy
+    EXPECT_EQ(from_vector, to_vector);
+    // change original vector
+    from_vector[0].a = 42;
+    EXPECT_EQ(from_vector[0].a, 42);
+    EXPECT_NE(from_vector, to_vector);
+}
 
 TEST(Transform, BASIC_TEST) {
     std::string s("hello");

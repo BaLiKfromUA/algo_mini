@@ -90,6 +90,7 @@ target_link_libraries(
         gtest_main
         ${LIBRARY_NAME}
 )
+target_compile_definitions(${TEST_NAME} PRIVATE TEST_DEBUG=1)
 
 include(GoogleTest)
 gtest_discover_tests(${TEST_NAME})
