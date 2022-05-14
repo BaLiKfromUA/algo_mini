@@ -11,6 +11,8 @@
 namespace my_std {
     template<typename T, template<typename...> typename Container = std::vector>
     class stream {
+    private:
+        const Container<T> _container;
     public:
         explicit stream(const Container<T> &container) : _container(container) {}
 
@@ -49,9 +51,6 @@ namespace my_std {
 
             return result;
         }
-
-    private:
-        const Container<T> _container;
     };
 }
 

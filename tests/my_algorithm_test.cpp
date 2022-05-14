@@ -23,13 +23,11 @@ TEST(Copy, BASIC_TEST_WITH_VECTORS_POD) {
     }
 
     testing::internal::CaptureStdout();
-    auto end = my_std::copy(from_vector.begin(), from_vector.end(),
-                            to_vector.begin());
+    my_std::copy(from_vector.begin(), from_vector.end(),
+                 to_vector.begin());
     std::string output = testing::internal::GetCapturedStdout();
     EXPECT_EQ("trivial", output);
 
-    // test return value
-    EXPECT_EQ(end, to_vector.end());
     // test array after copy
     EXPECT_EQ(from_vector, to_vector);
     // change original vector
@@ -48,19 +46,41 @@ TEST(Copy, BASIC_TEST_WITH_ARRAYS_POD) {
 
     int arr1[N]; // initial values -- garbage
     testing::internal::CaptureStdout();
-    auto arr_end = my_std::copy(arr, arr + 10, arr1);
+    my_std::copy(arr, arr + 10, arr1);
     std::string output = testing::internal::GetCapturedStdout();
     EXPECT_EQ("trivial", output);
-
-    // test return value
-    EXPECT_EQ(arr_end, arr1 + N);
-    EXPECT_EQ(arr_end, std::end(arr1));
 
     // test array after copy
     EXPECT_NE(arr, arr1);
     for (int i = 0; i < N; ++i) {
         EXPECT_EQ(arr[i], arr1[i]);
     }
+}
+
+TEST(Copy, NOT_TRIVIAL_OUTPUT_ITERATORS) {
+    std::vector<int> from_vector(N);
+    std::iota(from_vector.begin(), from_vector.end(), 1);
+
+    testing::internal::CaptureStdout();
+    my_std::copy(from_vector.begin(), from_vector.end(),
+                 std::ostream_iterator<int>(std::cout, " "));
+    std::string output = testing::internal::GetCapturedStdout();
+    EXPECT_EQ("not trivial1 2 3 4 5 6 7 8 9 10 ", output);
+
+    testing::internal::CaptureStdout();
+    std::vector<int> to_vector;
+    my_std::copy(from_vector.begin(), from_vector.end(),
+                 std::back_inserter(to_vector));
+    output = testing::internal::GetCapturedStdout();
+
+    EXPECT_EQ("not trivial", output);
+
+    // test array after copy
+    EXPECT_EQ(from_vector, to_vector);
+    // change original vector
+    from_vector[0] = 42;
+    EXPECT_EQ(from_vector[0], 42);
+    EXPECT_NE(from_vector, to_vector);
 }
 
 struct A {
@@ -95,13 +115,11 @@ TEST(Copy, BASIC_TEST_WITH_VECTORS_NOT_POD) {
     }
 
     testing::internal::CaptureStdout();
-    auto end = my_std::copy(from_vector.begin(), from_vector.end(),
-                            to_vector.begin());
+    my_std::copy(from_vector.begin(), from_vector.end(),
+                 to_vector.begin());
     std::string output = testing::internal::GetCapturedStdout();
     EXPECT_EQ("not trivial", output);
 
-    // test return value
-    EXPECT_EQ(end, to_vector.end());
     // test array after copy
     EXPECT_EQ(from_vector, to_vector);
     // change original vector
@@ -171,6 +189,8 @@ TEST(MapReduce, TEST_MAP) {
     auto characters = my_std::stream(init).map<char>([](auto value) { return value + 'a'; }).collect();
     std::vector<char> expected_characters = {'a', 'b', 'c', 'd', 'e'};
     EXPECT_EQ(expected_characters, characters);
+
+    // todo: test map with different structure (set, map)
 }
 
 TEST(MapReduce, TEST_EXAMPLES_FROM_TASK) {
@@ -233,3 +253,4 @@ TEST(MapReduce, TEST_EXAMPLES_FROM_TASK) {
     }
 }
 
+// todo: test collects

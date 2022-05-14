@@ -10,6 +10,8 @@
 #include "my_algorithm.h"
 
 void my_copy_example() {
+    std::cout << "==== my copy ====\n";
+
     const int N = 10;
     std::vector<int> from_vector(N);
     std::iota(from_vector.begin(), from_vector.end(), 1);
@@ -20,16 +22,32 @@ void my_copy_example() {
     std::cout << '\n';
 
     std::vector<int> to_vector(N, 0);
-    auto end = my_std::copy(from_vector.begin(), from_vector.end(),
-                            to_vector.begin());
-    assert(end == to_vector.end());
+    my_std::copy(from_vector.cbegin(), from_vector.cend(),
+                 to_vector.begin());
+
     for (int i: to_vector) {
         std::cout << i << ' ';
     }
     std::cout << '\n';
+
+    my_std::copy(from_vector.crbegin(), from_vector.crend(),
+                 std::ostream_iterator<int>(std::cout, " "));
+
+    std::cout << '\n';
+
+    to_vector.clear();
+    my_std::copy(from_vector.rbegin(), from_vector.rend(),
+                 std::back_inserter(to_vector));
+
+    for (int i: to_vector) {
+        std::cout << i << ' ';
+    }
+
+    std::cout << '\n';
 }
 
 void my_transform_example() {
+    std::cout << "==== my transform ====\n";
     std::string s("hello");
     my_std::transform(s.begin(), s.end(), s.begin(),
                       [](unsigned char c) -> unsigned char { return std::toupper(c); });
@@ -63,6 +81,7 @@ void my_transform_example() {
 }
 
 void my_stream_example() {
+    std::cout << "==== my stream ====\n";
     std::vector<int> init{1, 2, 3, 4, 5};
     // my_std::stream s({1, 2, 3, 4, 5});
     my_std::stream intStream(init);
