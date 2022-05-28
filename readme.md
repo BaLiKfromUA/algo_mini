@@ -40,7 +40,18 @@ Author : [Valentyn Yukhymenko](https://github.com/BaLiKfromUA)
 
 API and implementation of library can be found in the header files.
 
-#### Examples from task description
+#### Notes
+
+Current Map-Reduce implementation supports next data structures **as an input**:
+- selected stl containers: `std::vector, std::deque, std::list, std::set, std::multiset, std::array`;
+- initializer list: `std::initializer_list<T>`
+- raw array as the pair: `T *begin, std::size_t n`
+
+Result of `collect()` can be packed to the next containers: `std::vector, std::deque, std::list, std::set, std::multiset`
+
+By default it's `std::vector`
+
+#### Examples
 
 1. **my_std::copy**
 ```cpp
@@ -91,9 +102,7 @@ API and implementation of library can be found in the header files.
    ```cpp
    auto sum = my_std::stream({1, 2, 3, 4, 5})
                         .map<int>([](const auto &value) { return value * value; })
-                        .reduce([](const auto &left, const auto &right) {
-                                return left + right;
-                        });
+                        .reduce(std::plus<>{});
    EXPECT_EQ(55, sum);
    ```
    2. find the longest string in array

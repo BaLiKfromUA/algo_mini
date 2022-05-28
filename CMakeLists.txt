@@ -81,7 +81,7 @@ enable_testing()
 add_executable(
         ${TEST_NAME}
         tests/my_algorithm_test.cpp
-)
+        tests/my_stream_test.cpp)
 
 target_include_directories(${TEST_NAME} PRIVATE include)
 

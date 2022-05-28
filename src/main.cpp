@@ -84,9 +84,9 @@ void my_stream_example() {
     std::cout << "==== my stream ====\n";
     std::vector<int> init{1, 2, 3, 4, 5};
     // my_std::stream s({1, 2, 3, 4, 5});
-    my_std::stream intStream(init);
+    my_std::stream int_stream(init);
 
-    std::cout << intStream
+    std::cout << int_stream
             .map<int>([](const auto &value) { return value * value; })
             .reduce(std::plus<>{});
 
@@ -120,7 +120,6 @@ void my_stream_example() {
             .reduce([](const auto &left, const auto &right) {
                 std::map<std::string, int> result = left;
 
-                // todo: use merge!
                 for (const auto &[key, value]: right) {
                     result[key] += value;
                 }
@@ -131,7 +130,6 @@ void my_stream_example() {
     for (const auto &[key, value]: result) {
         std::cout << key << " : " << value << "\n";
     }
-
 }
 
 int main() {
