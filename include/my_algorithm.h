@@ -31,6 +31,22 @@ namespace my_std {
         struct are_all_base_of<Base, Check> {
             constexpr static bool value = std::is_base_of<Base, typename std::iterator_traits<Check>::iterator_category>::value;
         };
+
+
+        /*  template<typename OutputIt, typename Function, typename InputIt>
+            struct validate_function {
+                using OutputType = typename std::iterator_traits<OutputIt>::value_type;
+                using InputType = typename std::iterator_traits<InputIt>::value_type;
+                constexpr static bool value = std::is_same_v<OutputType,
+                        typename std::result_of<Function(InputType)>::type>;
+            };
+        */
+
+        template<typename OutputType, typename Function, typename... Args>
+        struct validate_function {
+            constexpr static bool value = std::is_same_v<OutputType,
+                    typename std::result_of<Function(Args...)>::type>;
+        };
     }
 
     // https://en.cppreference.com/w/cpp/algorithm/copy
@@ -67,7 +83,11 @@ namespace my_std {
             class = typename std::enable_if<
                     are_all_base_of<std::input_iterator_tag, InputIt>::value
                     &&
-                    are_all_base_of<std::output_iterator_tag, OutputIt>::value>>
+                    are_all_base_of<std::output_iterator_tag, OutputIt>::value
+                    &&
+                    validate_function<typename std::iterator_traits<OutputIt>::value_type,
+                            UnaryOperation,
+                            typename std::iterator_traits<InputIt>::value_type>::value>>
     OutputIt transform(InputIt first1, InputIt last1, OutputIt d_first, UnaryOperation unary_op) {
         while (first1 != last1) {
             *d_first++ = unary_op(*first1++);
@@ -79,7 +99,12 @@ namespace my_std {
             class = typename std::enable_if<
                     are_all_base_of<std::input_iterator_tag, InputIt1, InputIt2>::value
                     &&
-                    are_all_base_of<std::output_iterator_tag, OutputIt>::value>>
+                    are_all_base_of<std::output_iterator_tag, OutputIt>::value
+                    &&
+                    validate_function<typename std::iterator_traits<OutputIt>::value_type,
+                            BinaryOperation,
+                            typename std::iterator_traits<InputIt1>::value_type,
+                            typename std::iterator_traits<InputIt2>::value_type>::value>>
     OutputIt transform(InputIt1 first1, InputIt1 last1, InputIt2 first2, OutputIt d_first,
                        BinaryOperation binary_op) {
         while (first1 != last1) {
@@ -92,7 +117,13 @@ namespace my_std {
             class = typename std::enable_if<
                     are_all_base_of<std::input_iterator_tag, InputIt1, InputIt2, InputIt3>::value
                     &&
-                    are_all_base_of<std::output_iterator_tag, OutputIt>::value>>
+                    are_all_base_of<std::output_iterator_tag, OutputIt>::value
+                    &&
+                    validate_function<typename std::iterator_traits<OutputIt>::value_type,
+                            TernaryOperation,
+                            typename std::iterator_traits<InputIt1>::value_type,
+                            typename std::iterator_traits<InputIt2>::value_type,
+                            typename std::iterator_traits<InputIt3>::value_type>::value>>
     OutputIt transform(InputIt1 first1, InputIt1 last1, InputIt2 first2, InputIt3 first3,
                        OutputIt d_first, TernaryOperation ternary_op) {
         while (first1 != last1) {
