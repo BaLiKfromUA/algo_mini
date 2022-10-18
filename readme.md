@@ -17,7 +17,7 @@ Author : [Valentyn Yukhymenko](https://github.com/BaLiKfromUA)
 
 1. Clone the project.
     ```bash
-    git clone git@github.com:ucu-cs/lab9_apps_algorithms-BaLiKfromUA.git
+    git clone git@github.com:BaLiKfromUA/algo_mini.git
     ```
 2. Install required packages.
 
