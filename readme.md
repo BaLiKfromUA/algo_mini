@@ -4,7 +4,7 @@ It is required to implement algorithms library C ++, which includes:
 
 - Own implementation of std :: copy, which takes into account the difference between POD and non-POD.
 - Implementation of transform for two and three intervals. (The interface should be similar to std :: transform).
-- Implementation of MapReduce.
+- Implementation of **single-thread** MapReduce.
 
 Author : [Valentyn Yukhymenko](https://github.com/BaLiKfromUA)
 
